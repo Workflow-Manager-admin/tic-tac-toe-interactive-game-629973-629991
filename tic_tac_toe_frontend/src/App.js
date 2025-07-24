@@ -1,90 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import logo from './logo.svg';
 import './App.css';
 
 // PUBLIC_INTERFACE
 function App() {
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [xIsNext, setXIsNext] = useState(true);
+  const [theme, setTheme] = useState('light');
 
-  // Calculate winner by checking all possible winning combinations
-  const calculateWinner = (squares) => {
-    const lines = [
-      [0, 1, 2], // top row
-      [3, 4, 5], // middle row
-      [6, 7, 8], // bottom row
-      [0, 3, 6], // left column
-      [1, 4, 7], // middle column
-      [2, 5, 8], // right column
-      [0, 4, 8], // diagonal
-      [2, 4, 6], // diagonal
-    ];
+  // Effect to apply theme to document element
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-        return squares[a];
-      }
-    }
-    return null;
+  // PUBLIC_INTERFACE
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
   };
-
-  // Check if the game is a draw
-  const isDraw = (squares) => {
-    return squares.every(square => square !== null);
-  };
-
-  // Handle cell click
-  const handleClick = (index) => {
-    const newBoard = [...board];
-    
-    // Return if cell is filled or there's a winner
-    if (calculateWinner(board) || board[index]) {
-      return;
-    }
-
-    newBoard[index] = xIsNext ? 'X' : 'O';
-    setBoard(newBoard);
-    setXIsNext(!xIsNext);
-  };
-
-  // Reset the game
-  const resetGame = () => {
-    setBoard(Array(9).fill(null));
-    setXIsNext(true);
-  };
-
-  const winner = calculateWinner(board);
-  const gameIsDraw = !winner && isDraw(board);
-
-  // Generate status message
-  let status;
-  if (winner) {
-    status = `Winner: ${winner}`;
-  } else if (gameIsDraw) {
-    status = "Game is a draw!";
-  } else {
-    status = `Next player: ${xIsNext ? 'X' : 'O'}`;
-  }
 
   return (
     <div className="App">
-      <h1 className="game-title">Tic Tac Toe</h1>
-      <div className="game-status">{status}</div>
-      <div className="game-board">
-        {board.map((cell, index) => (
-          <button
-            key={index}
-            className={`cell ${cell?.toLowerCase()}`}
-            onClick={() => handleClick(index)}
-            disabled={cell !== null || winner !== null}
-          >
-            {cell}
-          </button>
-        ))}
-      </div>
-      <button className="reset-button" onClick={resetGame}>
-        Reset Game
-      </button>
+      <header className="App-header">
+        <button 
+          className="theme-toggle" 
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+        >
+          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+        </button>
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <p>
+          Current theme: <strong>{theme}</strong>
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
     </div>
   );
 }
