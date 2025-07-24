@@ -10,7 +10,7 @@
 .App {
   text-align: center;
   min-height: 100vh;
-  background-color: var(--bg-light);
+  background-color: red;
   color: var(--text-dark);
   display: flex;
   flex-direction: column;
